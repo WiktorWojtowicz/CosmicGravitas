@@ -9,10 +9,10 @@
 #include "Vector2.hpp"
 #include "rgba.hpp"
 #include "const.hpp"
+#include "Camera.hpp"
 
 struct Planet {
-    SDL_Renderer* renderer;
-    int32_t screenPosX, screenPosY, radius;
+    double radius;
     RGBA color;
     double mass;
     Vector2 position;
@@ -20,10 +20,10 @@ struct Planet {
     Vector2 acceleration = Vector2::zero();
     Vector2 netForce = Vector2::zero();
 
-    Planet(SDL_Renderer* rend, int32_t posX, int32_t posY, int32_t r, double _mass, RGBA col)
-        : renderer(rend), screenPosX(posX), screenPosY(posY), radius(r), mass(_mass), color(col) {
-        position.x = static_cast<double>(posX * SCALING_VALUE);
-        position.y = static_cast<double>(posY * SCALING_VALUE);
+    Planet(int32_t posX, int32_t posY, int32_t r, double _mass, RGBA col, Camera* cam)
+        : radius(r), mass(_mass), color(col) {
+        position.x = ((static_cast<double>(posX)) / cam->zoom) + cam->position.x;
+        position.y = ((static_cast<double>(posY)) / cam->zoom) + cam->position.y;
     }
 
     Vector2 getGravityForce(Planet* p, Vector2 distanceVec, double distance) {
@@ -89,81 +89,11 @@ struct Planet {
         #endif
     }
 
-    void RenderFillCircle(int x, int y, int radius) {
-        int offsetx, offsety, d;
-        int status;
-
-        offsetx = 0;
-        offsety = radius;
-        d = radius - 1;
-        status = 0;
-
-        while (offsety >= offsetx) {
-            status += SDL_RenderDrawLine(renderer, x - offsety, y + offsetx,
-                                         x + offsety, y + offsetx);
-            status += SDL_RenderDrawLine(renderer, x - offsetx, y + offsety,
-                                         x + offsetx, y + offsety);
-            status += SDL_RenderDrawLine(renderer, x - offsetx, y - offsety,
-                                         x + offsetx, y - offsety);
-            status += SDL_RenderDrawLine(renderer, x - offsety, y - offsetx,
-                                         x + offsety, y - offsetx);
-
-            if (status < 0) {
-                status = -1;
-                break;
-            }
-
-            if (d >= 2 * offsetx) {
-                d -= 2 * offsetx + 1;
-                offsetx += 1;
-            } else if (d < 2 * (radius - offsety)) {
-                d += 2 * offsety - 1;
-                offsety -= 1;
-            } else {
-                d += 2 * (offsety - offsetx - 1);
-                offsety -= 1;
-                offsetx += 1;
-            }
-        }
-    }
-
     void Move(double dt) {
         dt *= TIME_MULTIPLIER;
         position += velocity * dt + acceleration * dt * dt * 0.5;
         velocity += acceleration * dt;
-
-        if (position.x < 0 || position.x > WINDOW_WIDTH) {
-            velocity.x *= -1.0f;
-
-            if (position.x < 0) {
-                position.x = 0;
-            } else {
-                position.x = WINDOW_WIDTH;
-            }
-        }
-        if (position.y < 0 || position.y > WINDOW_HEIGHT) {
-            velocity.y *= -1.0f;
-
-            if (position.y < 0) {
-                position.y = 0;
-            } else {
-                position.y = WINDOW_HEIGHT;
-            }
-        }
-
         acceleration = Vector2::zero();
-    }
-
-    void Draw() {
-        screenPosX = static_cast<int>(position.x / SCALING_VALUE);
-        screenPosY = static_cast<int>(position.y / SCALING_VALUE);
-
-        #if DEBUG_MODE
-            std::cout << "Rendering position (x, y): (" << screenPosX << ", " << screenPosY << ")" << std::endl;
-        #endif
-
-        SDL_SetRenderDrawColor(renderer, color.R, color.G, color.B, color.A);
-        RenderFillCircle(screenPosX, screenPosY, radius);
     }
 };
 

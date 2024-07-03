@@ -14,5 +14,7 @@
 #include "rgba.hpp"
 #include "Random.hpp"
 #include "const.hpp"
+#include "ScreenRender.hpp"
+#include "InputManager.hpp"
 
 #endif // MAIN_HEADER
