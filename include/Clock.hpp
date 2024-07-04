@@ -2,9 +2,10 @@
 #define CLOCK_HPP
 
 #include <SDL.h>
+#include "const.hpp"
 
 void initializeClock();
 void tick();
-double getDeltaTime();
+large_float getDeltaTime();
 
 #endif // CLOCK_HPP

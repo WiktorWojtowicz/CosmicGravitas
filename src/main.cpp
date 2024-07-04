@@ -42,17 +42,34 @@ int main(int argc, char* argv[]) {
 
     /* this is for testing purposes */
     #if TEST_MODE
-    Planet testPlanetA(WINDOW_BORDER, WINDOW_HEIGHT / 2, 10, 10000, blueColor, &render.camera);
-    Planet testPlanetB(WINDOW_WIDTH - WINDOW_BORDER, WINDOW_HEIGHT / 2, 20, 20000, greenColor, &render.camera);
-    Planet testPlanetC(0, 0, 5, 5000, redColor, &render.camera);
+    Planet earth(
+        -192200000,
+        0,
+        6371000, 
+        5972190000000000000000000.0f, 
+        greenColor, 
+        &render.camera
+    );
+    Planet moon(
+        192200000, 
+        0, 
+        173700, 
+        73476730900000000000000.0f, 
+        whiteColor, 
+        &render.camera
+    );
+    Planet humanLike(
+        -192199900, 
+        0,
+        2,
+        80.0f,
+        redColor, 
+        &render.camera
+    );
 
-    planets.push_back(testPlanetA);
-    planets.push_back(testPlanetB); 
-    // for (int i = 0; i < 5; i++) {
-    //     planets.push_back(testPlanetC);
-    //     testPlanetC.position.y += 300 * SCALING_VALUE;
-    //     testPlanetC.position.x += 600 * SCALING_VALUE;
-    // }
+    planets.push_back(earth);
+    planets.push_back(moon); 
+    planets.push_back(humanLike); 
     #endif
     /* this was for testing purposes */
 
@@ -85,7 +102,7 @@ int main(int argc, char* argv[]) {
                         spawnX, 
                         spawnY, 
                         randomMass / 200, 
-                        (static_cast<double> (randomMass)), 
+                        (static_cast<large_float> (randomMass)), 
                         planetColor,
                         &render.camera
                     );

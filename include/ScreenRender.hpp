@@ -33,9 +33,9 @@ struct ScreenRender
         SDL_RenderClear(renderer);
     }
 
-    void RenderFillCircle(int32_t x, int32_t y, int32_t radius) {
-        int32_t offsetx, offsety, d;
-        int32_t status;
+    void RenderFillCircle(int64_t x, int64_t y, int64_t radius) {
+        int64_t offsetx, offsety, d;
+        int64_t status;
 
         offsetx = 0;
         offsety = radius;
@@ -43,19 +43,10 @@ struct ScreenRender
         status = 0;
 
         while (offsety >= offsetx) {
-            status += SDL_RenderDrawLine(renderer, x - offsety, y + offsetx,
-                                         x + offsety, y + offsetx);
-            status += SDL_RenderDrawLine(renderer, x - offsetx, y + offsety,
-                                         x + offsetx, y + offsety);
-            status += SDL_RenderDrawLine(renderer, x - offsetx, y - offsety,
-                                         x + offsetx, y - offsety);
-            status += SDL_RenderDrawLine(renderer, x - offsety, y - offsetx,
-                                         x + offsety, y - offsetx);
-
-            if (status < 0) {
-                status = -1;
-                break;
-            }
+            SDL_RenderDrawLine(renderer, x - offsety, y + offsetx, x + offsety, y + offsetx);
+            SDL_RenderDrawLine(renderer, x - offsetx, y + offsety, x + offsetx, y + offsety);
+            SDL_RenderDrawLine(renderer, x - offsetx, y - offsety, x + offsetx, y - offsety);
+            SDL_RenderDrawLine(renderer, x - offsety, y - offsetx, x + offsety, y - offsetx);
 
             if (d >= 2 * offsetx) {
                 d -= 2 * offsetx + 1;
@@ -72,9 +63,9 @@ struct ScreenRender
     }
     
     bool OnScreen(Planet* p) {
-        double screenPosX = (((p->position.x) - camera.position.x) * camera.zoom);
-        double screenPosY = (((p->position.y) - camera.position.y) * camera.zoom);
-        double radius = (p->radius * camera.zoom);
+        large_float screenPosX = (((p->position.x) - camera.position.x) * camera.zoom);
+        large_float screenPosY = (((p->position.y) - camera.position.y) * camera.zoom);
+        large_float radius = (p->radius * camera.zoom);
 
         return (screenPosX + radius > 0 && screenPosX - radius < WINDOW_WIDTH &&
                 screenPosY + radius > 0 && screenPosY - radius < WINDOW_HEIGHT);
@@ -82,9 +73,9 @@ struct ScreenRender
 
 
     void RenderPlanet(Planet* p) {
-        int32_t screenPosX = static_cast<int32_t>(((p->position.x) - camera.position.x) * camera.zoom);
-        int32_t screenPosY = static_cast<int32_t>(((p->position.y) - camera.position.y) * camera.zoom);
-        int32_t radius = static_cast<int32_t>(p->radius * camera.zoom);
+        int64_t screenPosX = static_cast<int64_t>(((p->position.x) - camera.position.x) * camera.zoom);
+        int64_t screenPosY = static_cast<int64_t>(((p->position.y) - camera.position.y) * camera.zoom);
+        int64_t radius = static_cast<int64_t>(p->radius * camera.zoom);
 
         #if DEBUG_MODE
             std::cout << "Rendering position (x, y): (" << screenPosX << ", " << screenPosY << ")" << std::endl;

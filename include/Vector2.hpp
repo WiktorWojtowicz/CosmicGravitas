@@ -3,34 +3,35 @@
 
 #include <iostream>
 #include <cmath>
+#include "const.hpp"
 
 class Vector2 {
 public:
-    double x, y;
+    large_float x, y;
 
-    Vector2(double x = 0, double y = 0) : x(x), y(y) { }
+    Vector2(large_float x = 0, large_float y = 0) : x(x), y(y) { }
 
     void normalize() {
-        double l = sqrt(x * x + y * y);
+        large_float l = sqrt(x * x + y * y);
         if (l > 0) {
             x /= l;
             y /= l;
         }
     }
 
-    double dot(const Vector2& other) const {
+    large_float dot(const Vector2& other) const {
         return x * other.x + y * other.y;
     }
 
-    double cross(const Vector2& other) const {
+    large_float cross(const Vector2& other) const {
         return x * other.y - y * other.x;
     }
 
-    double magnitude() const {
+    large_float magnitude() const {
         return sqrt(x * x + y * y);
     }
 
-    double squaredMagnitude() const {
+    large_float squaredMagnitude() const {
         return x * x + y * y;
     }
 
@@ -58,25 +59,25 @@ public:
         return *this;
     }
 
-    Vector2& operator+=(const double& scalar) {
+    Vector2& operator+=(const large_float& scalar) {
         x += scalar;
         y += scalar;
         return *this;
     }
 
-    Vector2& operator-=(const double& scalar) {
+    Vector2& operator-=(const large_float& scalar) {
         x -= scalar;
         y -= scalar;
         return *this;
     }
 
-    Vector2& operator*=(const double& scalar) {
+    Vector2& operator*=(const large_float& scalar) {
         x *= scalar;
         y *= scalar;
         return *this;
     }
 
-    Vector2& operator/=(const double& scalar) {
+    Vector2& operator/=(const large_float& scalar) {
         x /= scalar;
         y /= scalar;
         return *this;
@@ -110,25 +111,25 @@ public:
         return result;
     }
 
-    Vector2 operator+(const double& scalar) const {
+    Vector2 operator+(const large_float& scalar) const {
         Vector2 result = *this;
         result += scalar;
         return result;
     }
 
-    Vector2 operator-(const double& scalar) const {
+    Vector2 operator-(const large_float& scalar) const {
         Vector2 result = *this;
         result -= scalar;
         return result;
     }
 
-    Vector2 operator*(const double& scalar) const {
+    Vector2 operator*(const large_float& scalar) const {
         Vector2 result = *this;
         result *= scalar;
         return result;
     }
 
-    Vector2 operator/(const double& scalar) const {
+    Vector2 operator/(const large_float& scalar) const {
         Vector2 result = *this;
         result /= scalar;
         return result;

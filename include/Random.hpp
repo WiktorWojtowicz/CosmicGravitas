@@ -28,8 +28,8 @@ struct Random {
     }
 
 
-    double randomDouble() {
-        return static_cast<double>(random());
+    large_float randomLargeFloat() {
+        return static_cast<large_float>(random());
     }
 
     int32_t mapIntToRange(int32_t value, int32_t a, int32_t b) {

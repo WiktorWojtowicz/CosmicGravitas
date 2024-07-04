@@ -1,9 +1,16 @@
 #ifndef CONST_HEADER
 #define CONST_HEADER
 
+#include <boost/multiprecision/cpp_dec_float.hpp>
+#include "rgba.hpp"
+
+using boost::multiprecision::cpp_dec_float_100;
+typedef cpp_dec_float_100    large_float;
+
 const char         WINDOW_TITLE[]   = "CosmicGravitas Window";
 const unsigned int WINDOW_WIDTH     = 2560;
 const unsigned int WINDOW_HEIGHT    = 1440;
+
 
 
 const Uint32 CREATION_FLAGS         = SDL_WINDOW_SHOWN               |
@@ -12,24 +19,24 @@ const Uint32 CREATION_FLAGS         = SDL_WINDOW_SHOWN               |
                                       SDL_WINDOW_ALLOW_HIGHDPI;
                             
 
-// const double SCALING_VALUE          = 1.0f;
-const double GRAVITATIONAL_CONSTANT = 0.000000000066743;
-const double TIME_MULTIPLIER        = 1000000.0f;
+// const large_float SCALING_VALUE          = 1.0f;
+const large_float GRAVITATIONAL_CONSTANT = 0.000000000066743;
+const large_float TIME_MULTIPLIER        = 1.0f;
 
-#define CAMERA_ZOOMING_SPEED        1.0f;
+#define CAMERA_ZOOMING_SPEED        5.0f;
 #define INITIAL_CAMERA_ZOOM         1.0f;
 #define CAMERA_SPEED                1000.0f;
 
-const double MIN_CAMERA_ZOOM        = 0.00001f;
-const double MAX_CAMERA_ZOOM        = 10000.0f;
+const large_float MIN_CAMERA_ZOOM        = 0.000001f;
+const large_float MAX_CAMERA_ZOOM        = 100000.0f;
 
 /* Keys for movement and management of symulation */
 #define MOVE_UPWARDS_KEY    SDLK_w
 #define MOVE_RIGHT_KEY      SDLK_d
 #define MOVE_LEFT_KEY       SDLK_a
 #define MOVE_DOWNWARDS_KEY  SDLK_s
-#define ZOOM_IN_KEY         SDLK_q
-#define ZOOM_OUT_KEY        SDLK_e
+#define ZOOM_IN_KEY         SDLK_e
+#define ZOOM_OUT_KEY        SDLK_q
 #define PAUSE_KEY           SDLK_SPACE
 #define DELETE_PLANETS_KEY  SDLK_BACKSPACE
 
@@ -48,7 +55,7 @@ const RGBA grayColor(130, 130, 130, 255);
 
 #define BACKGROUND_COLOR blackColor
 
-#define DEBUG_MODE false
+#define DEBUG_MODE true
 #define TEST_MODE true
 
 #endif // CONST_HEADER
