@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <limits>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_render.h>

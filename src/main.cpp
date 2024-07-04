@@ -35,27 +35,27 @@ int main(int argc, char* argv[]) {
     }
 
     vector<Planet> planets;
+    bool paused = false;
+    Random random((uint64_t)time(NULL));
+    ScreenRender render(renderer, &planets);
+    InputManager inputManager;
 
     /* this is for testing purposes */
-    #if TEST_MODE    
-    RGBA redColor(255, 58, 104, 255);
-    RGBA greenColor(110, 255, 105, 255);
-    RGBA blueColor(79, 175, 255, 255);
-
-    Planet testPlanetA(renderer, WINDOW_BORDER, WINDOW_HEIGHT / 2, 10, 10000, blueColor);
-    Planet testPlanetB(renderer, WINDOW_WIDTH - WINDOW_BORDER, WINDOW_HEIGHT / 2, 20, 20000, greenColor);
-    Planet testPlanetC(renderer, 0, 0, 5, 5000, redColor);
+    #if TEST_MODE
+    Planet testPlanetA(WINDOW_BORDER, WINDOW_HEIGHT / 2, 10, 10000, blueColor, &render.camera);
+    Planet testPlanetB(WINDOW_WIDTH - WINDOW_BORDER, WINDOW_HEIGHT / 2, 20, 20000, greenColor, &render.camera);
+    Planet testPlanetC(0, 0, 5, 5000, redColor, &render.camera);
 
     planets.push_back(testPlanetA);
     planets.push_back(testPlanetB); 
-    for (int i = 0; i < 5; i++) {
-        planets.push_back(testPlanetC);
-        testPlanetC.position.y += 300 * SCALING_VALUE;
-        testPlanetC.position.x += 600 * SCALING_VALUE;
-    }
+    // for (int i = 0; i < 5; i++) {
+    //     planets.push_back(testPlanetC);
+    //     testPlanetC.position.y += 300 * SCALING_VALUE;
+    //     testPlanetC.position.x += 600 * SCALING_VALUE;
+    // }
     #endif
     /* this was for testing purposes */
-    Random random((uint64_t)time(NULL));
+
 
     initializeClock();
 
@@ -67,71 +67,103 @@ int main(int argc, char* argv[]) {
                 run = false;
                 break;
             }
-            case SDL_KEYDOWN: {
-                switch (windowEvent.key.keysym.sym) {
-                    case SDLK_SPACE: {
-                        int32_t spawnX, spawnY, weight;
-                        weight = random.randomIntRange(MIN_PLANET_RANDOM_WEIGHT, MAX_PLANET_RANDOM_WEIGHT);
-                        SDL_GetMouseState(&spawnX, &spawnY);
+            case SDL_MOUSEBUTTONDOWN: {
+                if (windowEvent.button.button == PLANET_SPAWN_BUTTON) {
+                    int32_t spawnX, spawnY, randomMass;
+                    SDL_GetMouseState(&spawnX, &spawnY);
+                    randomMass = random.randomIntRange(MIN_PLANET_RANDOM_WEIGHT, MAX_PLANET_RANDOM_WEIGHT);
 
-                        RGBA planetToSpawnColor(
-                            random.randomIntRange(0, 0xFF),
-                            random.randomIntRange(0, 0xFF),
-                            random.randomIntRange(0, 0xFF),
-                            random.randomIntRange(0, 0xFF)
-                        );
-                        
-                        Planet planetToSpawn(
-                            renderer,
-                            spawnX,
-                            spawnY,
-                            weight / 200,
-                            weight,
-                            planetToSpawnColor
-                        );
+                    RGBA planetColor(
+                        random.randomIntRange(0, 0xFF),
+                        random.randomIntRange(0, 0xFF),
+                        random.randomIntRange(0, 0xFF),
+                        0xFF
+                    );
 
-                        planets.push_back(planetToSpawn);
-                        #if DEBUG_MODE
-                        cout << "Spawned planet: " << planetToSpawn.position << endl;
-                        #endif
-                        break;
-                    }
-                    case SDLK_BACKSPACE: {
-                        planets.erase(planets.begin(), planets.end());
-                        #if DEBUG_MODE
-                        cout << "Erased" << endl;
-                        #endif
-                    }
-                    default:
-                        break;
-                    }
-                break;
+                    // Create the planet
+                    planets.emplace_back(
+                        spawnX, 
+                        spawnY, 
+                        randomMass / 200, 
+                        (static_cast<double> (randomMass)), 
+                        planetColor,
+                        &render.camera
+                    );
+
+                    #if DEBUG_MODE
+                    cout << "Spawned planet at position: " << (*planets.end()).position << "and mass " << (*planets.end()).mass << endl;
+                    #endif
                 }
+                break;
+            }
+            case SDL_KEYDOWN: {
+                inputManager.HandleKeyDown(windowEvent.key.keysym.sym);
+                break;
+            }
+            case SDL_KEYUP: {
+                inputManager.HandleKeyUp(windowEvent.key.keysym.sym);
+                break;
+            }
             default:
                 break;
             }
-
         }
-
-        for (size_t i = 0; i < planets.size(); ++i) {
-            for (size_t j = i + 1; j < planets.size(); ++j) {
-                planets[i].DoPhysicsWithPlanet(&planets[j]);
-            }
+        // TODO: Figure out more sophisticated way
+        /* Checking inputs */
+        if (inputManager.GetKeyValue(MOVE_UPWARDS_KEY)) {
+            render.camera.Up(getDeltaTime());
+        }
+        if (inputManager.GetKeyValue(MOVE_RIGHT_KEY)) {
+            render.camera.Right(getDeltaTime());
+        }
+        if (inputManager.GetKeyValue(MOVE_LEFT_KEY)) {
+            render.camera.Left(getDeltaTime());
+        }
+        if (inputManager.GetKeyValue(MOVE_DOWNWARDS_KEY)) {
+            render.camera.Down(getDeltaTime());
         }
         
-        for (auto& planet : planets) {
-            planet.setAcceleration();
-            planet.Move(getDeltaTime());
+        if (inputManager.GetKeyValue(ZOOM_IN_KEY)) {
+            render.camera.ZoomIn(getDeltaTime());
+        }
+        if (inputManager.GetKeyValue(ZOOM_OUT_KEY)) {
+            render.camera.ZoomOut(getDeltaTime());
+        }
+        
+
+        if (inputManager.GetKeyValue(DELETE_PLANETS_KEY)) {
+            planets.erase(planets.begin(), planets.end());
+            #if DEBUG_MODE
+                cout << "Erased" << endl;
+            #endif
+            inputManager.ReleaseKey(DELETE_PLANETS_KEY);
+        }
+        if (inputManager.GetKeyValue(PAUSE_KEY)) {
+            paused = !paused;
+            #if DEBUG_MODE
+            if (paused)
+                cout << "Paused" << endl;
+            else
+                cout << "Started" << endl;
+            #endif
+            inputManager.ReleaseKey(PAUSE_KEY);
         }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        for (auto& planet : planets) {
-            planet.Draw();
+        if (!paused) {
+            for (size_t i = 0; i < planets.size(); ++i) {
+                for (size_t j = i + 1; j < planets.size(); ++j) {
+                    planets[i].DoPhysicsWithPlanet(&planets[j]);
+                }
+            }
+            
+            for (auto& planet : planets) {
+                planet.setAcceleration();
+                planet.Move(getDeltaTime());
+            }
         }
 
-        SDL_RenderPresent(renderer);
+        render.Render();
+
         tick();
     }
 

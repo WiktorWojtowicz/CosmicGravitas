@@ -72,12 +72,12 @@ struct ScreenRender
     }
     
     bool OnScreen(Planet* p) {
-        int32_t screenPosX = static_cast<int32_t>(((p->position.x) - camera.position.x) * camera.zoom);
-        int32_t screenPosY = static_cast<int32_t>(((p->position.y) - camera.position.y) * camera.zoom);
-        int32_t radius = static_cast<int32_t>(p->radius * camera.zoom);
+        double screenPosX = (((p->position.x) - camera.position.x) * camera.zoom);
+        double screenPosY = (((p->position.y) - camera.position.y) * camera.zoom);
+        double radius = (p->radius * camera.zoom);
 
-        return (screenPosX + radius >= 0 && screenPosX - radius <= WINDOW_WIDTH &&
-                screenPosY + radius >= 0 && screenPosY - radius <= WINDOW_HEIGHT);
+        return (screenPosX + radius > 0 && screenPosX - radius < WINDOW_WIDTH &&
+                screenPosY + radius > 0 && screenPosY - radius < WINDOW_HEIGHT);
     }
 
 

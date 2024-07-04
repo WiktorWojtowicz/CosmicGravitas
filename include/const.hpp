@@ -2,8 +2,8 @@
 #define CONST_HEADER
 
 const char         WINDOW_TITLE[]   = "CosmicGravitas Window";
-const unsigned int WINDOW_WIDTH     = 2560 / 2;
-const unsigned int WINDOW_HEIGHT    = 1440 / 2;
+const unsigned int WINDOW_WIDTH     = 2560;
+const unsigned int WINDOW_HEIGHT    = 1440;
 
 
 const Uint32 CREATION_FLAGS         = SDL_WINDOW_SHOWN               |
@@ -20,6 +20,9 @@ const double TIME_MULTIPLIER        = 1000000.0f;
 #define INITIAL_CAMERA_ZOOM         1.0f;
 #define CAMERA_SPEED                1000.0f;
 
+const double MIN_CAMERA_ZOOM        = 0.00001f;
+const double MAX_CAMERA_ZOOM        = 10000.0f;
+
 /* Keys for movement and management of symulation */
 #define MOVE_UPWARDS_KEY    SDLK_w
 #define MOVE_RIGHT_KEY      SDLK_d
@@ -31,8 +34,8 @@ const double TIME_MULTIPLIER        = 1000000.0f;
 #define DELETE_PLANETS_KEY  SDLK_BACKSPACE
 
 /* Values for beta functions */
-#define MAX_PLANET_RANDOM_WEIGHT 10000
-#define MIN_PLANET_RANDOM_WEIGHT 100
+#define MAX_PLANET_RANDOM_WEIGHT 100000
+#define MIN_PLANET_RANDOM_WEIGHT 1000
 #define WINDOW_BORDER 100
 #define PLANET_SPAWN_BUTTON SDL_BUTTON_LEFT
 
