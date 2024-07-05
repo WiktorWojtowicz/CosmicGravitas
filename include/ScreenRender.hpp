@@ -43,10 +43,46 @@ struct ScreenRender
         status = 0;
 
         while (offsety >= offsetx) {
-            SDL_RenderDrawLine(renderer, x - offsety, y + offsetx, x + offsety, y + offsetx);
-            SDL_RenderDrawLine(renderer, x - offsetx, y + offsety, x + offsetx, y + offsety);
-            SDL_RenderDrawLine(renderer, x - offsetx, y - offsety, x + offsetx, y - offsety);
-            SDL_RenderDrawLine(renderer, x - offsety, y - offsetx, x + offsety, y - offsetx);
+            if (y + offsetx > WINDOW_BORDER && y + offsetx < WINDOW_HEIGHT) {
+                SDL_RenderDrawLine(
+                    renderer, 
+                    std::max(x - offsety, static_cast<int64_t>(WINDOW_BORDER - 1)), 
+                    y + offsetx,
+                    std::min(x + offsety, static_cast<int64_t>(WINDOW_WIDTH + 1)),
+                    y + offsetx
+                );
+            }
+           
+            if (y - offsetx > WINDOW_BORDER && y - offsetx < WINDOW_HEIGHT) {
+                SDL_RenderDrawLine(
+                    renderer, 
+                    std::max(x - offsety, static_cast<int64_t>(WINDOW_BORDER - 1)), 
+                    y - offsetx, 
+                    std::min(x + offsety, static_cast<int64_t>(WINDOW_WIDTH + 1)), 
+                    y - offsetx
+                );
+            }
+           
+
+            if (y + offsety > WINDOW_BORDER && y + offsety < WINDOW_HEIGHT) {
+                SDL_RenderDrawLine(
+                    renderer, 
+                    std::max(x - offsetx, static_cast<int64_t>(WINDOW_BORDER - 1)), 
+                    y + offsety, 
+                    std::min(x + offsetx, static_cast<int64_t>(WINDOW_WIDTH + 1)), 
+                    y + offsety
+                );
+            }
+
+            if (y - offsety > WINDOW_BORDER && y - offsety < WINDOW_HEIGHT) {
+                SDL_RenderDrawLine(
+                    renderer, 
+                    std::max(x - offsetx, static_cast<int64_t>(WINDOW_BORDER - 1)), 
+                    y - offsety, 
+                    std::min(x + offsetx, static_cast<int64_t>(WINDOW_WIDTH + 1)), 
+                    y - offsety
+                );
+            }
 
             if (d >= 2 * offsetx) {
                 d -= 2 * offsetx + 1;
@@ -63,8 +99,8 @@ struct ScreenRender
     }
     
     bool OnScreen(Planet* p) {
-        large_float screenPosX = (((p->position.x) - camera.position.x) * camera.zoom);
-        large_float screenPosY = (((p->position.y) - camera.position.y) * camera.zoom);
+        large_float screenPosX = (((p->position.x) - camera.position.x) * camera.zoom) + (static_cast<large_float>(WINDOW_WIDTH / 2));
+        large_float screenPosY = (((p->position.y) - camera.position.y) * camera.zoom) + (static_cast<large_float>(WINDOW_HEIGHT / 2));
         large_float radius = (p->radius * camera.zoom);
 
         return (screenPosX + radius > 0 && screenPosX - radius < WINDOW_WIDTH &&
@@ -73,8 +109,8 @@ struct ScreenRender
 
 
     void RenderPlanet(Planet* p) {
-        int64_t screenPosX = static_cast<int64_t>(((p->position.x) - camera.position.x) * camera.zoom);
-        int64_t screenPosY = static_cast<int64_t>(((p->position.y) - camera.position.y) * camera.zoom);
+        int64_t screenPosX = (static_cast<int64_t>(((p->position.x) - camera.position.x) * camera.zoom)) + (static_cast<int64_t>(WINDOW_WIDTH / 2));
+        int64_t screenPosY = (static_cast<int64_t>(((p->position.y) - camera.position.y) * camera.zoom)) + (static_cast<int64_t>(WINDOW_HEIGHT / 2));
         int64_t radius = static_cast<int64_t>(p->radius * camera.zoom);
 
         #if DEBUG_MODE

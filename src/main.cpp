@@ -43,24 +43,24 @@ int main(int argc, char* argv[]) {
     /* this is for testing purposes */
     #if TEST_MODE
     Planet earth(
-        -192200000,
-        0,
+        static_cast<large_float>(0),
+        static_cast<large_float>(0),
         6371000, 
         5972190000000000000000000.0f, 
         greenColor, 
         &render.camera
     );
     Planet moon(
-        192200000, 
-        0, 
+        static_cast<large_float>(384400000), 
+        static_cast<large_float>(0),
         173700, 
         73476730900000000000000.0f, 
         whiteColor, 
         &render.camera
     );
     Planet humanLike(
-        -192199900, 
-        0,
+        static_cast<large_float>(0),
+        static_cast<large_float>(-637105),
         2,
         80.0f,
         redColor, 
@@ -77,6 +77,10 @@ int main(int argc, char* argv[]) {
     initializeClock();
 
     while (run) {
+        #if DEBUG_MODE
+        cout << "FPS: " << 1 / getDeltaTime() << endl;
+        #endif
+
         while (SDL_PollEvent(&windowEvent)) {
             switch (windowEvent.type)
             {
@@ -143,10 +147,10 @@ int main(int argc, char* argv[]) {
         if (inputManager.GetKeyValue(ZOOM_IN_KEY)) {
             render.camera.ZoomIn(getDeltaTime());
         }
+
         if (inputManager.GetKeyValue(ZOOM_OUT_KEY)) {
             render.camera.ZoomOut(getDeltaTime());
         }
-        
 
         if (inputManager.GetKeyValue(DELETE_PLANETS_KEY)) {
             planets.erase(planets.begin(), planets.end());

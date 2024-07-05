@@ -28,7 +28,7 @@ public:
     }
 
     large_float magnitude() const {
-        return sqrt(x * x + y * y);
+        return sqrt(squaredMagnitude());
     }
 
     large_float squaredMagnitude() const {
@@ -141,6 +141,17 @@ public:
 
     bool operator!=(const Vector2& other) const {
         return !(*this == other);
+    }
+
+    Vector2 abs() {
+        Vector2 result = *this;
+        if (result.x < 0) {
+            result.x *= -1;
+        }
+        if (result.y < 0) {
+            result.y *= -1;
+        }
+        return result;
     }
 
     static Vector2 zero() {

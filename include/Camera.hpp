@@ -42,11 +42,24 @@ struct Camera
         #endif
     }
 
-    void ZoomIn(large_float dt) {
-        Vector2 zoomCenter = position;
-        zoomCenter.x += (static_cast<large_float>(WINDOW_HEIGHT / 2)) / zoom;
-        zoomCenter.y += (static_cast<large_float>(WINDOW_WIDTH / 2)) / zoom;
+    void ZoomOut(large_float dt) {
+        large_float prevZoom = zoom;
 
+        if (zoom > 1.0f) {
+            zoom -= dt * zoomingSpeed / zoom;
+        } else {
+            zoom -= dt * zoomingSpeed * zoom;
+        }
+
+        zoom = std::max(MIN_CAMERA_ZOOM, zoom);
+
+        #if DEBUG_MODE
+            std::cout << "Zooming out" << std::endl;
+            std::cout << "Zoom: " << zoom << std::endl;
+        #endif
+    }
+
+    void ZoomIn(large_float dt) {
         large_float prevZoom = zoom;
 
         if (zoom > 1.0f) {
@@ -57,41 +70,12 @@ struct Camera
 
         zoom = std::min(MAX_CAMERA_ZOOM, zoom);
 
-        large_float deltaZoom = zoom - prevZoom;
-
-        Vector2 cameraMove = (position - zoomCenter) * (deltaZoom / zoom);
-
-        position -= cameraMove;
-
         #if DEBUG_MODE
             std::cout << "Zooming in" << std::endl;
             std::cout << "Zoom: " << zoom << std::endl;
         #endif
-
     }
-    void ZoomOut(large_float dt) {
-        large_float prevZoom = zoom;
-        Vector2 zoomCenter = position;
 
-        if (zoom > 1.0f) {
-            zoom -= dt * zoomingSpeed / zoom;
-        } else {
-            zoom -= dt * zoomingSpeed * zoom;
-        }
-        
-        zoom = std::max(MIN_CAMERA_ZOOM, zoom);
-
-        large_float deltaZoom = zoom - prevZoom;
-
-        Vector2 cameraMove = (position - zoomCenter) * (deltaZoom / zoom);
-
-        position -= cameraMove;
-
-        #if DEBUG_MODE
-            std::cout << "Zooming out" << std::endl;
-            std::cout << "Zoom: " << zoom << std::endl;
-        #endif
-    }
 };
 
 #endif // CAMERA_HEADER

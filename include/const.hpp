@@ -23,8 +23,9 @@ const Uint32 CREATION_FLAGS         = SDL_WINDOW_SHOWN               |
 const large_float GRAVITATIONAL_CONSTANT = 0.000000000066743;
 const large_float TIME_MULTIPLIER        = 1.0f;
 
+/* Zooming and camera */
 #define CAMERA_ZOOMING_SPEED        5.0f;
-#define INITIAL_CAMERA_ZOOM         1.0f;
+#define INITIAL_CAMERA_ZOOM         0.0001f;
 #define CAMERA_SPEED                1000.0f;
 
 const large_float MIN_CAMERA_ZOOM        = 0.000001f;
@@ -43,9 +44,13 @@ const large_float MAX_CAMERA_ZOOM        = 100000.0f;
 /* Values for beta functions */
 #define MAX_PLANET_RANDOM_WEIGHT 100000
 #define MIN_PLANET_RANDOM_WEIGHT 1000
-#define WINDOW_BORDER 100
-#define PLANET_SPAWN_BUTTON SDL_BUTTON_LEFT
 
+/* Random stuff*/
+#define WINDOW_BORDER 0
+#define PLANET_SPAWN_BUTTON SDL_BUTTON_LEFT
+#define LARGE_PLANET_CONSTANT 6371000ll * 6371000ll / 1000ll
+
+/* Colors*/
 const RGBA redColor(255, 58, 104, 255);
 const RGBA greenColor(110, 255, 105, 255);
 const RGBA blueColor(79, 175, 255, 255);

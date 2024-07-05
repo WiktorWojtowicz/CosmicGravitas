@@ -21,10 +21,16 @@ struct Planet {
     Vector2 acceleration = Vector2::zero();
     Vector2 netForce = Vector2::zero();
 
-    Planet(int64_t posX, int64_t posY, int64_t r, large_float _mass, RGBA col, Camera* cam)
+    Planet(int64_t posX, int64_t posY, large_float r, large_float _mass, RGBA col, Camera* cam)
         : radius(r), mass(_mass), color(col) {
-        position.x = ((static_cast<large_float>(posX)) / cam->zoom) + cam->position.x;
-        position.y = ((static_cast<large_float>(posY)) / cam->zoom) + cam->position.y;
+        position.x = ((static_cast<large_float>(posX - (WINDOW_WIDTH / 2))) / cam->zoom) + cam->position.x;
+        position.y = ((static_cast<large_float>(posY - (WINDOW_HEIGHT / 2))) / cam->zoom) + cam->position.y;
+    }
+
+    Planet(large_float posX, large_float posY, large_float r, large_float _mass, RGBA col, Camera* cam)
+        : radius(r), mass(_mass), color(col) {
+        position.x = posX;
+        position.y = posY;
     }
 
     Vector2 getGravityForce(Planet* p, Vector2 distanceVec, large_float distance) {
