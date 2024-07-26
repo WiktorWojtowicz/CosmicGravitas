@@ -145,7 +145,4 @@ struct ScreenRender
     }
 
 };
-
-
-
 #endif // RENDER_HPP

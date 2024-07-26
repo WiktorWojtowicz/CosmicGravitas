@@ -8,7 +8,7 @@
 
 struct Camera
 {
-    const large_float cameraSpeed = CAMERA_SPEED;
+    large_float cameraSpeed = CAMERA_SPEED;
     Vector2 position = Vector2::zero();
     large_float zoom = INITIAL_CAMERA_ZOOM;
     large_float zoomingSpeed = CAMERA_ZOOMING_SPEED;

@@ -8,6 +8,10 @@
 #include <time.h>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
 #include "Clock.hpp"
 #include "Vector2.hpp"
 #include "Planet.hpp"

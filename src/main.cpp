@@ -42,34 +42,60 @@ int main(int argc, char* argv[]) {
 
     /* this is for testing purposes */
     #if TEST_MODE
-    Planet earth(
+    Planet sun(
         static_cast<large_float>(0),
+        static_cast<large_float>(0),
+        696340000,
+        1989000000000000000000000000000.0f, 
+        yellowColor, 
+        &render.camera
+    );
+
+    Planet earth(
+        static_cast<large_float>(149597870700),
         static_cast<large_float>(0),
         6371000, 
         5972190000000000000000000.0f, 
         greenColor, 
         &render.camera
     );
+    earth.velocity.y = 30000.0f;
+    
     Planet moon(
-        static_cast<large_float>(384400000), 
+        static_cast<large_float>(earth.position.x + 384400000), 
         static_cast<large_float>(0),
         173700, 
         73476730900000000000000.0f, 
         whiteColor, 
         &render.camera
     );
+    moon.velocity.y = earth.velocity.y + 1023.0f;
+    
     Planet humanLike(
-        static_cast<large_float>(0),
-        static_cast<large_float>(-637105),
+        static_cast<large_float>(earth.position.x),
+        static_cast<large_float>(earth.position.y - earth.radius),
         2,
         80.0f,
         redColor, 
         &render.camera
     );
+    humanLike.velocity = earth.velocity;
 
+    Planet photon(
+        static_cast<large_float>(1),
+        static_cast<large_float>(0),
+        10,
+        0.0f,
+        whiteColor, 
+        &render.camera
+    );
+    photon.velocity.x = 299792458;
+
+    // planets.push_back(photon);
+    planets.push_back(humanLike);
     planets.push_back(earth);
     planets.push_back(moon); 
-    planets.push_back(humanLike); 
+    planets.push_back(sun); 
     #endif
     /* this was for testing purposes */
 
@@ -134,12 +160,15 @@ int main(int argc, char* argv[]) {
         if (inputManager.GetKeyValue(MOVE_UPWARDS_KEY)) {
             render.camera.Up(getDeltaTime());
         }
+        
         if (inputManager.GetKeyValue(MOVE_RIGHT_KEY)) {
             render.camera.Right(getDeltaTime());
         }
+
         if (inputManager.GetKeyValue(MOVE_LEFT_KEY)) {
             render.camera.Left(getDeltaTime());
         }
+        
         if (inputManager.GetKeyValue(MOVE_DOWNWARDS_KEY)) {
             render.camera.Down(getDeltaTime());
         }
@@ -150,6 +179,15 @@ int main(int argc, char* argv[]) {
 
         if (inputManager.GetKeyValue(ZOOM_OUT_KEY)) {
             render.camera.ZoomOut(getDeltaTime());
+        }
+
+        if (inputManager.GetKeyValue(SPRINT_KEY)) {
+            render.camera.cameraSpeed = CAMERA_SPEED * CAMERA_SPRINT_MULTIPLIER;
+        }
+        else if (inputManager.GetKeyValue(SLOW_DOWN_KEY)) {
+            render.camera.cameraSpeed = CAMERA_SPEED * CAMERA_SLOW_MULTIPLIER;
+        } else {
+            render.camera.cameraSpeed = CAMERA_SPEED;
         }
 
         if (inputManager.GetKeyValue(DELETE_PLANETS_KEY)) {
