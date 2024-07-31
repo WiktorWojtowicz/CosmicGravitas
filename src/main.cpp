@@ -1,4 +1,4 @@
-#include "main.hpp"
+#include "Main.hpp"
 
 using namespace std;
 
@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     ScreenRender render(renderer, &planets);
     InputManager inputManager;
 
-    /* this is for testing purposes */
+    /* Hard-coded demo */
     #if TEST_MODE
     Planet sun(
         static_cast<large_float>(0),
@@ -74,22 +74,12 @@ int main(int argc, char* argv[]) {
     Planet humanLike(
         static_cast<large_float>(earth.position.x),
         static_cast<large_float>(earth.position.y - earth.radius),
-        2,
-        80.0f,
+        static_cast<large_float>( 1 ),
+        static_cast<large_float>( 80.0f ),
         redColor, 
         &render.camera
     );
     humanLike.velocity = earth.velocity;
-
-    Planet photon(
-        static_cast<large_float>(1),
-        static_cast<large_float>(0),
-        10,
-        0.0f,
-        whiteColor, 
-        &render.camera
-    );
-    photon.velocity.x = 299792458;
 
     // planets.push_back(photon);
     planets.push_back(humanLike);

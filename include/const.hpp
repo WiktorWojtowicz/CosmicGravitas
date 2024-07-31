@@ -7,7 +7,7 @@
 using boost::multiprecision::cpp_dec_float_100;
 typedef cpp_dec_float_100    large_float;
 
-const char         WINDOW_TITLE[]   = "CosmicGravitas Window";
+const char         WINDOW_TITLE[]   = "CosmicGravitas Alpha Window";
 const unsigned int WINDOW_WIDTH     = 2560;
 const unsigned int WINDOW_HEIGHT    = 1440;
 
