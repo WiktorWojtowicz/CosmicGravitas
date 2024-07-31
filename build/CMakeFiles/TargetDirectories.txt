@@ -1,0 +1,3 @@
+C:/Users/Game_/dev/CosmicGravitas/build/CMakeFiles/CosmicGravitas.dir
+C:/Users/Game_/dev/CosmicGravitas/build/CMakeFiles/edit_cache.dir
+C:/Users/Game_/dev/CosmicGravitas/build/CMakeFiles/rebuild_cache.dir
