@@ -19,3 +19,4 @@ cmake --build "$RELEASE_DIR" --parallel
 
 echo "Running CPack"
 cpack
+echo "Done! Your executable is in $RELEASE_DIR"

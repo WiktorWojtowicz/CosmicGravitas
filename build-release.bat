@@ -30,4 +30,4 @@ if %ERRORLEVEL% NEQ 0 (
     exit
 )
 
-echo Done! your executable is in %RELEASE_DIR%
+echo Done! Your executable is in %RELEASE_DIR%
