@@ -10,14 +10,14 @@ mkdir %RELEASE_DIR% > nul 2>&1
 cd %RELEASE_DIR%
 
 echo Running CMake
-cmake -S %ROOT_DIR% -DCMAKE_BUILD_TYPE="Release" -B %RELEASE_DIR%
+cmake -S %ROOT_DIR% -DCMAKE_BUILD_TYPE="Release" -B %RELEASE_DIR% %*
 if %ERRORLEVEL% NEQ 0 (
     echo CMake failed with exit code %ERRORLEVEL%.
     exit
 )
 
 echo Building...
-cmake --build %RELEASE_DIR% --parallel
+cmake --build %RELEASE_DIR% --parallel 
 if %ERRORLEVEL% NEQ 0 (
     echo Build failed with exit code %ERRORLEVEL%.
     exit

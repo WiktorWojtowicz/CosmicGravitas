@@ -42,7 +42,7 @@ endif()
 
 # SDL2_image
 find_package(SDL2_image QUIET)
-if(NOT SDL2_IMAGE_FOUND)
+if(NOT SDL2_image_FOUND)
     message(STATUS "SDL2_image not found. Fetching it automatically")
     FetchContent_Declare(
       SDL2_image
@@ -84,12 +84,25 @@ target_include_directories(CosmicGravitas
     PUBLIC ${Boost_INCLUDE_DIRS}
 )
 
+# if (MINGW AND WIN32)
+#     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static")
+#     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static")
+# endif()
+
 if(WIN32 AND NOT MSVC)
     target_link_libraries(CosmicGravitas 
     PUBLIC ${SDL2_LIBRARIES} 
     PUBLIC SDL2::SDL2main
     PUBLIC SDL2_image::SDL2_image mingw32
     PUBLIC ${Boost_LIBRARIES}
+)
+elseif(WIN32 AND MINGW)
+    install(FILES
+        "${MINGW_PATH}/bin/libgcc_s_seh-1.dll"
+        "${MINGW_PATH}/bin/libstdc++-6.dll"
+        "${MINGW_PATH}/bin/libwinpthread-1.dll"
+        DESTINATION bin
+        COMPONENT library
 )
 else()
     target_link_libraries(CosmicGravitas 

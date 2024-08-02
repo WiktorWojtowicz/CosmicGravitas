@@ -11,7 +11,7 @@ RELEASE_DIR="$BUILD_DIR/release"
 cd "$RELEASE_DIR"
 
 echo "Running CMake"
-cmake -S "$ROOT_DIR" -G "Unix Makefiles" -DCMAKE_BUILD_TYPE="Release" -B "$RELEASE_DIR"
+cmake -S "$ROOT_DIR" -G "Unix Makefiles" -DCMAKE_BUILD_TYPE="Release" -B "$RELEASE_DIR" "$@"
 
 echo "Building..."
 cmake --build "$RELEASE_DIR" --parallel
