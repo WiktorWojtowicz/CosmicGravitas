@@ -25,7 +25,7 @@ const large_float TIME_MULTIPLIER        = 1.0f;
 
 /* Zooming and camera */
 #define CAMERA_ZOOMING_SPEED        5.0f
-#define INITIAL_CAMERA_ZOOM         0.0001f
+#define INITIAL_CAMERA_ZOOM         0.000001f
 #define CAMERA_SPEED                1000.0f
 #define CAMERA_SPRINT_MULTIPLIER    1.5f
 #define CAMERA_SLOW_MULTIPLIER      0.5f
