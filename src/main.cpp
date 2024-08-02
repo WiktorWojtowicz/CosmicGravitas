@@ -89,12 +89,12 @@ int main(int argc, char* argv[]) {
     #endif
     /* this was for testing purposes */
 
-
-    initializeClock();
+    Clock clock;
+    clock.init();
 
     while (run) {
         #if DEBUG_MODE
-        cout << "FPS: " << 1 / getDeltaTime() << endl;
+        cout << "FPS: " << 1 / clock.getDeltaTime() << endl;
         #endif
 
         while (SDL_PollEvent(&windowEvent)) {
@@ -148,27 +148,27 @@ int main(int argc, char* argv[]) {
         // TODO: Figure out more sophisticated way
         /* Checking inputs */
         if (inputManager.GetKeyValue(MOVE_UPWARDS_KEY)) {
-            render.camera.Up(getDeltaTime());
+            render.camera.Up(clock.getDeltaTime());
         }
         
         if (inputManager.GetKeyValue(MOVE_RIGHT_KEY)) {
-            render.camera.Right(getDeltaTime());
+            render.camera.Right(clock.getDeltaTime());
         }
 
         if (inputManager.GetKeyValue(MOVE_LEFT_KEY)) {
-            render.camera.Left(getDeltaTime());
+            render.camera.Left(clock.getDeltaTime());
         }
         
         if (inputManager.GetKeyValue(MOVE_DOWNWARDS_KEY)) {
-            render.camera.Down(getDeltaTime());
+            render.camera.Down(clock.getDeltaTime());
         }
         
         if (inputManager.GetKeyValue(ZOOM_IN_KEY)) {
-            render.camera.ZoomIn(getDeltaTime());
+            render.camera.ZoomIn(clock.getDeltaTime());
         }
 
         if (inputManager.GetKeyValue(ZOOM_OUT_KEY)) {
-            render.camera.ZoomOut(getDeltaTime());
+            render.camera.ZoomOut(clock.getDeltaTime());
         }
 
         if (inputManager.GetKeyValue(SPRINT_KEY)) {
@@ -207,13 +207,13 @@ int main(int argc, char* argv[]) {
             
             for (auto& planet : planets) {
                 planet.setAcceleration();
-                planet.Move(getDeltaTime());
+                planet.Move(clock.getDeltaTime());
             }
         }
 
         render.Render();
 
-        tick();
+        clock.tick();
     }
 
     SDL_DestroyWindow(window);

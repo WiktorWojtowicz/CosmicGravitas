@@ -1,25 +1,29 @@
-cmake_minimum_required(VERSION 3.20)
-project(CosmicGravitas)
+# Initial CMake config 
+cmake_minimum_required(VERSION 3.30)
+project(CosmicGravitas VERSION 0.0.2)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(ProcessorCount)
 
+# Build type
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+endif()
+
+# Multithreading
+include(ProcessorCount)
 ProcessorCount(N)
+
 if (N EQUAL 0)
     set(N 1) # Default to 1 if ProcessorCount fails
 endif()
-message(STATUS "Building with ${N} parallel jobs")
+
+message(STATUS "Building with ${N} threads")
 set(CMAKE_BUILD_PARALLEL_LEVEL ${N})
 
-set(CMAKE_BUILD_PARALLEL_LEVEL 4)
 
-add_executable(CosmicGravitas
-    src/Main.cpp
-    src/Clock.cpp
-)
-
+# Fetching missing libraries
 include(FetchContent)
 
 # SDL2
@@ -59,15 +63,19 @@ if(NOT Boost_FOUND)
       GIT_REPOSITORY https://github.com/boostorg/boost.git
       GIT_TAG boost-1.78.0
     )
-    FetchContent_MakeAvailable(Boost)
+    set(BOOST_ROOT ${boost_SOURCE_DIR})
     set(Boost_INCLUDE_DIRS ${boost_SOURCE_DIR})
     set(Boost_LIBRARIES Boost::Boost)
 endif()
 
-find_package(PNG REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED CONFIG)
+
+add_executable(CosmicGravitas
+    src/Main.cpp
+    src/Clock.cpp
+)
 
 target_include_directories(CosmicGravitas
     PUBLIC include/
@@ -79,12 +87,69 @@ target_include_directories(CosmicGravitas
 if(WIN32 AND NOT MSVC)
     target_link_libraries(CosmicGravitas 
     PUBLIC ${SDL2_LIBRARIES} 
-    SDL2_image::SDL2_image mingw32     
+    PUBLIC SDL2::SDL2main
+    PUBLIC SDL2_image::SDL2_image mingw32
     PUBLIC ${Boost_LIBRARIES}
 )
 else()
     target_link_libraries(CosmicGravitas 
-    PUBLIC ${SDL2_LIBRARIES}
-    SDL2_image::SDL2_image
+    PUBLIC SDL2::SDL2
+    PUBLIC SDL2::SDL2main
+    PUBLIC SDL2_image::SDL2_image
+    PUBLIC ${Boost_LIBRARIES}
 )
 endif()
+
+# Post-build commands to copy SDL2 and SDL2_image DLLs (for Windows)
+if(WIN32)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:SDL2::SDL2>" "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:SDL2_image::SDL2_image>" "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+    )
+endif()
+
+# Enable ccache if available
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ${CCACHE_PROGRAM})
+endif()
+
+# Pack with CPack
+
+install(TARGETS ${PROJECT_NAME}
+    DESTINATION bin
+    COMPONENT application
+)
+
+if(WIN32)
+    install(FILES "$<TARGET_FILE:SDL2::SDL2>"
+        DESTINATION bin
+        COMPONENT library
+    )
+    install(FILES "$<TARGET_FILE:SDL2_image::SDL2_image>"
+        DESTINATION bin
+        COMPONENT library
+    )
+endif()
+
+include(InstallRequiredSystemLibraries)
+
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
+# Set version
+set(CMAKE_PROJECT_VERSION ${PROJECT_VERSION})
+
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+set(CPACK_PACKAGE_NAME "Cosmic Gravitas Alpha ${PROJECT_VERSION}")
+set(CPACK_PACKAGE_VENDOR "Wiktor Wójtowicz")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CosmicGravitas - 2D C++ program that uses Newton's law of gravity to simulate the movement of planets")
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CMAKE_SYSTEM_NAME}")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "CosmicGravitas")
+set(CPACK_PACKAGE_EXECUTABLES "CosmicGravitas" "CosmicGravitas")
+
+set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
+include(CPack)
+

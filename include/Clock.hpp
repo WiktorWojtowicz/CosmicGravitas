@@ -4,8 +4,16 @@
 #include <SDL.h>
 #include "const.hpp"
 
-void initializeClock();
-void tick();
-large_float getDeltaTime();
+struct Clock
+{
+    Uint64 lastCounter;
+    large_float deltaTime;
+    large_float secondsPerCount;
+
+    void init();
+    void tick();
+    large_float getDeltaTime();
+};
+
 
 #endif // CLOCK_HPP
