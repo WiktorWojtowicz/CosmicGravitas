@@ -1,8 +1,8 @@
 @echo off
 
 set ROOT_DIR=%cd%
-set BUILD_DIR="%ROOT_DIR%\build"
-set RELEASE_DIR="%BUILD_DIR%\release"
+set BUILD_DIR=%ROOT_DIR%\build
+set RELEASE_DIR=%BUILD_DIR%\release
 
 mkdir %BUILD_DIR% > nul 2>&1
 mkdir %RELEASE_DIR% > nul 2>&1

@@ -18,6 +18,9 @@ struct ScreenRender
     std::vector<Planet>*    planets;
     Camera                  camera;
 
+    ScreenRender() {} 
+
+
     ScreenRender(SDL_Renderer * r, std::vector<Planet> * pl): renderer(r), planets(pl) 
     {
     }

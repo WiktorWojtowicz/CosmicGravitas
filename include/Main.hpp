@@ -12,6 +12,8 @@
 #include <mutex>
 #include <condition_variable>
 
+#include "Simulation.hpp"
+
 #include "Clock.hpp"
 #include "Vector2.hpp"
 #include "Planet.hpp"

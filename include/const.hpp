@@ -19,7 +19,6 @@ const Uint32 CREATION_FLAGS         = SDL_WINDOW_SHOWN               |
                                       SDL_WINDOW_ALLOW_HIGHDPI;
                             
 
-// const large_float SCALING_VALUE          = 1.0f;
 const large_float GRAVITATIONAL_CONSTANT = 0.000000000066743;
 const large_float TIME_MULTIPLIER        = 1.0f;
 
@@ -66,6 +65,6 @@ const RGBA grayColor(130, 130, 130, 255);
 #define BACKGROUND_COLOR blackColor
 
 #define DEBUG_MODE false
-#define TEST_MODE true
+#define DEMO_MODE  true
 
 #endif // CONST_HEADER
