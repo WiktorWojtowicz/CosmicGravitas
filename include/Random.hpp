@@ -8,39 +8,22 @@
 
 #include <stdint.h>
 #include <limits>
+#include "const.hpp" // Assuming large_float is defined in const.hpp
 
-struct Random {
+class Random {
+public:
     uint64_t seed;
     uint64_t aParam;
     uint64_t cParam;
     uint64_t mParam;
-    Random(uint64_t s = 1, uint64_t a = 1103515425, uint64_t c = 12345, uint64_t m = UINT64_MAX): seed(s), aParam(a), cParam(c), mParam(m) 
-    {
-    }
 
-    uint64_t random() {
-        seed = (seed * aParam + cParam) % mParam;
-        return (seed << 32);
-    }
+    Random(uint64_t s = 1, uint64_t a = 1103515425, uint64_t c = 12345, uint64_t m = UINT64_MAX);
 
-    int32_t randomInt() {
-        return static_cast<int32_t>(random() % std::numeric_limits<int32_t>::max());
-    }
-
-
-    large_float randomLargeFloat() {
-        return static_cast<large_float>(random());
-    }
-
-    int32_t mapIntToRange(int32_t value, int32_t a, int32_t b) {
-        int32_t rangeSize = b - a;
-        int32_t scaledValue = (value % rangeSize) + a;
-        return scaledValue;
-    }
-
-    int32_t randomIntRange(int32_t a, int32_t b) {
-        return mapIntToRange(randomInt(), a, b);
-    }
+    uint64_t random();
+    int32_t randomInt();
+    large_float randomLargeFloat();
+    int32_t mapIntToRange(int32_t value, int32_t a, int32_t b);
+    int32_t randomIntRange(int32_t a, int32_t b);
 };
 
 #endif // RANDOM_HEADER

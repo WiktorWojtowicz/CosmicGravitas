@@ -1,7 +1,9 @@
 #ifndef CONST_HEADER
 #define CONST_HEADER
 
+#include <SDL.h>
 #include <boost/multiprecision/cpp_dec_float.hpp>
+
 #include "rgba.hpp"
 
 using boost::multiprecision::cpp_dec_float_100;
@@ -64,7 +66,7 @@ const RGBA grayColor(130, 130, 130, 255);
 
 #define BACKGROUND_COLOR blackColor
 
-#define DEBUG_MODE true
+#define DEBUG_MODE false
 #define DEMO_MODE  true
 
 #endif // CONST_HEADER

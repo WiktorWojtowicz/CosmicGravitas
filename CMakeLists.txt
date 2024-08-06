@@ -77,6 +77,11 @@ add_executable(CosmicGravitas
     src/Main.cpp
     src/Clock.cpp
     src/Simulation.cpp
+    src/Vector2.cpp
+    src/ScreenRender.cpp
+    src/Random.cpp
+    src/Planet.cpp
+    src/Camera.cpp
 )
 
 target_include_directories(CosmicGravitas
