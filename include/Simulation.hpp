@@ -45,15 +45,10 @@ struct Simulation
     const char* error = nullptr;
     bool run = true;
 
-    int RunMainThread() {
-        while (run) {
-            #if DEBUG_MODE
-            cout << "FPS: " << 1 / clock.getDeltaTime() << endl;
-            #endif
-
-            while (SDL_PollEvent(&windowEvent)) {
-                switch (windowEvent.type)
-                {
+    void HandleEvents() {
+        while (SDL_PollEvent(&windowEvent)) {
+            switch (windowEvent.type)
+            {
                 case SDL_QUIT: {
                     run = false;
                     break;
@@ -82,7 +77,7 @@ struct Simulation
                         );
 
                         #if DEBUG_MODE
-                        cout << "Spawned planet at position: " << (*planets.end()).position << "and mass " << (*planets.end()).mass << endl;
+                            std::cout << "Spawned planet at position: " << (*planets.end()).position << "and mass " << (*planets.end()).mass << std::endl;
                         #endif
                     }
                     break;
@@ -97,72 +92,89 @@ struct Simulation
                 }
                 default:
                     break;
-                }
             }
-            // TODO: Figure out more sophisticated way
-            /* Checking inputs */
-            if (inputManager.GetKeyValue(MOVE_UPWARDS_KEY)) {
-                render.camera.Up(clock.getDeltaTime());
-            }
-            
-            if (inputManager.GetKeyValue(MOVE_RIGHT_KEY)) {
-                render.camera.Right(clock.getDeltaTime());
-            }
+        }
+    }
 
-            if (inputManager.GetKeyValue(MOVE_LEFT_KEY)) {
-                render.camera.Left(clock.getDeltaTime());
-            }
-            
-            if (inputManager.GetKeyValue(MOVE_DOWNWARDS_KEY)) {
-                render.camera.Down(clock.getDeltaTime());
-            }
-            
-            if (inputManager.GetKeyValue(ZOOM_IN_KEY)) {
-                render.camera.ZoomIn(clock.getDeltaTime());
-            }
+    void ManageInput() {
+        // TODO: Figure out more sophisticated way
+        if (inputManager.GetKeyValue(MOVE_UPWARDS_KEY)) {
+            render.camera.Up(clock.getDeltaTime());
+        }
+        
+        if (inputManager.GetKeyValue(MOVE_RIGHT_KEY)) {
+            render.camera.Right(clock.getDeltaTime());
+        }
 
-            if (inputManager.GetKeyValue(ZOOM_OUT_KEY)) {
-                render.camera.ZoomOut(clock.getDeltaTime());
-            }
+        if (inputManager.GetKeyValue(MOVE_LEFT_KEY)) {
+            render.camera.Left(clock.getDeltaTime());
+        }
+        
+        if (inputManager.GetKeyValue(MOVE_DOWNWARDS_KEY)) {
+            render.camera.Down(clock.getDeltaTime());
+        }
+        
+        if (inputManager.GetKeyValue(ZOOM_IN_KEY)) {
+            render.camera.ZoomIn(clock.getDeltaTime());
+        }
 
-            if (inputManager.GetKeyValue(SPRINT_KEY)) {
-                render.camera.cameraSpeed = CAMERA_SPEED * CAMERA_SPRINT_MULTIPLIER;
-            }
-            else if (inputManager.GetKeyValue(SLOW_DOWN_KEY)) {
-                render.camera.cameraSpeed = CAMERA_SPEED * CAMERA_SLOW_MULTIPLIER;
-            } else {
-                render.camera.cameraSpeed = CAMERA_SPEED;
-            }
+        if (inputManager.GetKeyValue(ZOOM_OUT_KEY)) {
+            render.camera.ZoomOut(clock.getDeltaTime());
+        }
 
-            if (inputManager.GetKeyValue(DELETE_PLANETS_KEY)) {
-                planets.erase(planets.begin(), planets.end());
-                #if DEBUG_MODE
-                    cout << "Erased" << endl;
-                #endif
-                inputManager.ReleaseKey(DELETE_PLANETS_KEY);
-            }
-            if (inputManager.GetKeyValue(PAUSE_KEY)) {
-                paused = !paused;
-                #if DEBUG_MODE
+        if (inputManager.GetKeyValue(SPRINT_KEY)) {
+            render.camera.cameraSpeed = CAMERA_SPEED * CAMERA_SPRINT_MULTIPLIER;
+        }
+        else if (inputManager.GetKeyValue(SLOW_DOWN_KEY)) {
+            render.camera.cameraSpeed = CAMERA_SPEED * CAMERA_SLOW_MULTIPLIER;
+        } else {
+            render.camera.cameraSpeed = CAMERA_SPEED;
+        }
+
+        if (inputManager.GetKeyValue(DELETE_PLANETS_KEY)) {
+            planets.erase(planets.begin(), planets.end());
+            #if DEBUG_MODE
+                std::cout << "Erased" << std::endl;
+            #endif
+            inputManager.ReleaseKey(DELETE_PLANETS_KEY);
+        }
+        if (inputManager.GetKeyValue(PAUSE_KEY)) {
+            paused = !paused;
+            #if DEBUG_MODE
                 if (paused)
-                    cout << "Paused" << endl;
+                    std::cout << "Paused" << std::endl;
                 else
-                    cout << "Started" << endl;
-                #endif
-                inputManager.ReleaseKey(PAUSE_KEY);
+                    std::cout << "Started" << std::endl;
+            #endif
+            inputManager.ReleaseKey(PAUSE_KEY);
+        }
+    }
+
+    void CalculatePhysics() {
+        for (size_t i = 0; i < planets.size(); ++i) {
+            for (size_t j = i + 1; j < planets.size(); ++j) {
+                planets[i].DoPhysicsWithPlanet(&planets[j]);
             }
+        }
+                
+        for (auto& planet : planets) {
+            planet.setAcceleration();
+            planet.Move(clock.getDeltaTime());
+        }
+    }
+
+    int RunMainThread() {
+        while (run) {
+            #if DEBUG_MODE
+                std::cout << "FPS: " << 1 / clock.getDeltaTime() << std::endl;
+            #endif
+
+            HandleEvents();
+            ManageInput();
+            
 
             if (!paused) {
-                for (size_t i = 0; i < planets.size(); ++i) {
-                    for (size_t j = i + 1; j < planets.size(); ++j) {
-                        planets[i].DoPhysicsWithPlanet(&planets[j]);
-                    }
-                }
-                
-                for (auto& planet : planets) {
-                    planet.setAcceleration();
-                    planet.Move(clock.getDeltaTime());
-                }
+                CalculatePhysics();
             }
 
             render.Render();
@@ -190,7 +202,7 @@ struct Simulation
         window = SDL_CreateWindow(
             WINDOW_TITLE,
             SDL_WINDOWPOS_CENTERED, 
-            SDL_WINDOWPOS_CENTERED, 
+            SDL_WINDOWPOS_CENTERED,
             WINDOW_WIDTH, 
             WINDOW_HEIGHT, 
             CREATION_FLAGS

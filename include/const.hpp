@@ -64,7 +64,7 @@ const RGBA grayColor(130, 130, 130, 255);
 
 #define BACKGROUND_COLOR blackColor
 
-#define DEBUG_MODE false
+#define DEBUG_MODE true
 #define DEMO_MODE  true
 
 #endif // CONST_HEADER

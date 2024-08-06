@@ -76,6 +76,7 @@ find_package(Boost REQUIRED CONFIG)
 add_executable(CosmicGravitas
     src/Main.cpp
     src/Clock.cpp
+    src/Simulation.cpp
 )
 
 target_include_directories(CosmicGravitas
