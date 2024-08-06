@@ -62,7 +62,7 @@ if(NOT Boost_FOUND)
     FetchContent_Declare(
       Boost
       GIT_REPOSITORY https://github.com/boostorg/boost.git
-      GIT_TAG boost-1.78.0
+      GIT_TAG boost-1.85.0
     )
     set(BOOST_ROOT ${boost_SOURCE_DIR})
     set(Boost_INCLUDE_DIRS ${boost_SOURCE_DIR})
