@@ -1,6 +1,6 @@
 # Initial CMake config 
 cmake_minimum_required(VERSION 3.30)
-project(CosmicGravitas VERSION 0.0.2)
+project(CosmicGravitas VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -26,98 +26,20 @@ set(CMAKE_BUILD_PARALLEL_LEVEL ${N})
 
 # Fetching missing libraries
 include(FetchContent)
-
-# SDL2
-find_package(SDL2 QUIET)
-if(NOT SDL2_FOUND)
-    message(STATUS "SDL2 not found. Fetching it automatically")
-    FetchContent_Declare(
-      SDL2
-      GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-      GIT_TAG release-2.26.5
-    )
-    FetchContent_MakeAvailable(SDL2)
-    set(SDL2_INCLUDE_DIRS ${sdl2_SOURCE_DIR}/include)
-    set(SDL2_LIBRARIES SDL2::SDL2)
-endif()
-
-# SDL2_image
-find_package(SDL2_image QUIET)
-if(NOT SDL2_image_FOUND)
-    message(STATUS "SDL2_image not found. Fetching it automatically")
-    FetchContent_Declare(
-      SDL2_image
-      GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
-      GIT_TAG release-2.6.3
-    )
-    FetchContent_MakeAvailable(SDL2_image)
-    set(SDL2_IMAGE_INCLUDE_DIRS ${sdl2_image_SOURCE_DIR})
-    set(SDL2_IMAGE_LIBRARIES SDL2_image::SDL2_image)
-endif()
-
-# Boost
-find_package(Boost QUIET)
-if(NOT Boost_FOUND)
-    message(STATUS "Boost not found. Fetching it automatically")
-    FetchContent_Declare(
-      Boost
-      GIT_REPOSITORY https://github.com/boostorg/boost.git
-      GIT_TAG boost-1.85.0
-    )
-    set(BOOST_ROOT ${boost_SOURCE_DIR})
-    set(Boost_INCLUDE_DIRS ${boost_SOURCE_DIR})
-    set(Boost_LIBRARIES Boost::Boost)
-endif()
-
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(Boost REQUIRED CONFIG)
+FetchContent_Declare(SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 3.0.1
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+    SYSTEM)
+FetchContent_MakeAvailable(SFML)
 
 add_executable(CosmicGravitas
     src/Main.cpp
-    src/Clock.cpp
-    src/Simulation.cpp
-    src/Vector2.cpp
-    src/ScreenRender.cpp
-    src/Random.cpp
-    src/Planet.cpp
-    src/Camera.cpp
 )
 
-target_include_directories(CosmicGravitas
-    PUBLIC include/
-    PUBLIC ${SDL2_INCLUDE_DIRS}
-    PUBLIC ${SDL2IMAGE_INCLUDE_DIRS}
-    PUBLIC ${Boost_INCLUDE_DIRS}
-)
-
-
-if(WIN32 AND NOT MSVC)
-    target_link_libraries(CosmicGravitas 
-    PUBLIC ${SDL2_LIBRARIES} 
-    PUBLIC SDL2::SDL2main
-    PUBLIC SDL2_image::SDL2_image mingw32
-    PUBLIC ${Boost_LIBRARIES}
-)
-else()
-    target_link_libraries(CosmicGravitas 
-    PUBLIC SDL2::SDL2
-    PUBLIC SDL2::SDL2main
-    PUBLIC SDL2_image::SDL2_image
-    PUBLIC ${Boost_LIBRARIES}
-)
-endif()
-
-
-# Post-build commands to copy SDL2 and SDL2_image DLLs (for Windows)
-if(WIN32)
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE:SDL2::SDL2>" "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE:SDL2_image::SDL2_image>" "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
-    )
-endif()
+target_compile_features(CosmicGravitas PRIVATE cxx_std_17)
+target_link_libraries(CosmicGravitas PRIVATE SFML::Graphics)
 
 # Enable ccache if available
 find_program(CCACHE_PROGRAM ccache)
@@ -133,16 +55,16 @@ install(TARGETS ${PROJECT_NAME}
     COMPONENT application
 )
 
-if(WIN32)
-    install(FILES "$<TARGET_FILE:SDL2::SDL2>"
-        DESTINATION bin
-        COMPONENT library
-    )
-    install(FILES "$<TARGET_FILE:SDL2_image::SDL2_image>"
-        DESTINATION bin
-        COMPONENT library
-    )
-endif()
+# if(WIN32)
+#     install(FILES "$<TARGET_FILE:SDL2::SDL2>"
+#         DESTINATION bin
+#         COMPONENT library
+#     )
+#     install(FILES "$<TARGET_FILE:SDL2_image::SDL2_image>"
+#         DESTINATION bin
+#         COMPONENT library
+#     )
+# endif()
 
 include(InstallRequiredSystemLibraries)
 
