@@ -16,7 +16,6 @@ namespace Physics {
         void passObjects(std::unordered_set<std::shared_ptr<Object>>& obj) {
             m_Objects = obj;
         }
-        Solver();
-        ~Solver();
+        Solver(std::unordered_set<std::shared_ptr<Object>>& objs) : m_Objects(objs) { }
     };    
 }

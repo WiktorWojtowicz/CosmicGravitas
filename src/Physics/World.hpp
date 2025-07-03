@@ -9,23 +9,21 @@
 #include "ForceGenerator.hpp"
 
 namespace Physics {
+    
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Solver, T>::value>::type>
     class World
     {
     private:
         std::unordered_set<std::shared_ptr<Object>> m_Objects;
-        std::unique_ptr<Solver> m_Solver;
+        T m_Solver;
         std::vector<std::unique_ptr<ForceGenerator>> m_ForceGenerators;
 
     public:
-        World(std::unique_ptr<Solver> solver) {
-            solver->passObjects(m_Objects);
-            m_Solver = std::move(solver);
-        }
-        ~World();
-        
-        void addForceGenerator(std::unique_ptr<ForceGenerator> gen) {
-            m_ForceGenerators.emplace_back(std::move(gen));
-            gen->passObjects(m_Objects);
+        World() : m_Solver(m_Objects) { }
+
+        template <typename A, typename = typename std::enable_if<std::is_base_of<ForceGenerator, A>::value>::type>
+        void addForceGenerator() {
+            m_ForceGenerators.emplace_back(std::move(std::make_unique<A>(m_Objects)));
         }
 
         void addObject(const std::shared_ptr<Object> obj) {
@@ -37,7 +35,14 @@ namespace Physics {
         }
 
         void update(floatType dt) {
-            m_Solver->solveObjects(dt);
+            for (auto& generator : m_ForceGenerators) {
+                generator->generateForces();
+            }
+            m_Solver.solveObjects(dt);
+        }
+
+        const std::unordered_set<std::shared_ptr<Object>> getObjects() {
+            return m_Objects;
         }
     };
 }

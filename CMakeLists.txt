@@ -38,6 +38,12 @@ add_executable(CosmicGravitas
     src/Main.cpp
 )
 
+target_include_directories(CosmicGravitas PUBLIC
+    src
+    src/Physics
+    src/Physics/solvers
+)
+
 target_compile_features(CosmicGravitas PRIVATE cxx_std_17)
 target_link_libraries(CosmicGravitas PRIVATE SFML::Graphics)
 

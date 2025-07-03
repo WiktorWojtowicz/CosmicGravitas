@@ -4,6 +4,10 @@
 
 #include "Vector.hpp"
 
+/*
+TODO: Make accelerated version & other solvers
+*/
+
 namespace Physics {
     using vec2 = sf::Vector2<floatType>;
 
@@ -30,7 +34,7 @@ namespace Physics {
             return m_MassInverse;
         }
 
-        floatType setMass(floatType value) {
+        void setMass(floatType value) {
             m_Mass = value;
             m_MassInverse = 1 / m_Mass;
         }

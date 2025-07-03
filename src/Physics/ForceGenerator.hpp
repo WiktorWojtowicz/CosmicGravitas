@@ -11,10 +11,7 @@ namespace Physics {
     protected:
         std::unordered_set<std::shared_ptr<Object>>& m_Objects;
     public:
-        ForceGenerator();
+        ForceGenerator(std::unordered_set<std::shared_ptr<Object>>& objs) : m_Objects(objs) { };
         virtual void generateForces() = 0;
-        void passObjects(const std::unordered_set<std::shared_ptr<Object>>& objs) {
-            m_Objects = objs;
-        }
     };    
 }

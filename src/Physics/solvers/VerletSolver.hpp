@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Solver.hpp"
+#include <iostream>
 
 namespace Physics {
     namespace Solvers {
@@ -21,6 +22,7 @@ namespace Physics {
                         solveObject(*obj, dt);
                     }
                 }
+                Verlet(std::unordered_set<std::shared_ptr<Object>>& objs) : Solver(objs) {}
         };
     }
 }
