@@ -13,7 +13,6 @@ namespace Physics {
     public:
         ForceGenerator();
         virtual void generateForces() = 0;
-    private:
         void passObjects(const std::unordered_set<std::shared_ptr<Object>>& objs) {
             m_Objects = objs;
         }
